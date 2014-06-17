@@ -64,7 +64,11 @@ module OM::XML::TermXpathGenerator
   def self.generate_absolute_xpath(term)
     relative = generate_relative_xpath(term)
     if term.parent.nil?
-      return "//#{relative}"
+      if relative.start_with?("/")
+        return "#{relative}"
+      else
+        return "//#{relative}"
+      end
     else
       return term.parent.xpath_absolute + "/" + relative
     end
