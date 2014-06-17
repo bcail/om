@@ -19,7 +19,8 @@ describe "OM::XML::TermXpathGeneratorSpec" do
 
   before(:each) do
     @test_term = OM::XML::Term.new(:terms_of_address, :path=>"namePart", :attributes=>{:type=>"termsOfAddress"})
-    @test_term_with_root_select = OM::XML::Term.new(:terms_of_address, :path=>"/namePart", :attributes=>{:type=>"termsOfAddress"})
+    @test_term_with_root_select = OM::XML::Term.new(:terms_of_address, :path=>"/namePart")
+    @test_term_with_root_select_ns = OM::XML::Term.new(:terms_of_address, :path=>"/namePart", :namespace_prefix=>"mods")
     @test_term_with_default_path = OM::XML::Term.new(:volume, :path=>"detail", :attributes=>{:type=>"volume"}, :default_content_path=>"number")
     @test_role_text = OM::XML::Term.new(:role_text, :path=>"roleTerm", :attributes=>{:type=>"text"})
     @test_lang_attribute = OM::XML::Term.new(:language, :path=>{:attribute=>"lang"})
@@ -69,7 +70,10 @@ describe "OM::XML::TermXpathGeneratorSpec" do
       OM::XML::TermXpathGenerator.generate_absolute_xpath(@test_term).should == '//namePart[@type="termsOfAddress"]'
     end
     it "should select from the root path if desired" do
-      OM::XML::TermXpathGenerator.generate_absolute_xpath(@test_term_with_root_select).should == '/namePart[@type="termsOfAddress"]'
+      OM::XML::TermXpathGenerator.generate_absolute_xpath(@test_term_with_root_select).should == '/namePart'
+    end
+    it "should select from the root path with a namespace" do
+      OM::XML::TermXpathGenerator.generate_absolute_xpath(@test_term_with_root_select_ns).should == '/mods:namePart'
     end
     it "should prepend the xpath for any parent nodes" do
       mock_parent_mapper = double("Term", :xpath_absolute=>'//name[@type="conference"]/role')

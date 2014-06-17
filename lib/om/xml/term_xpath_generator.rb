@@ -32,10 +32,15 @@ module OM::XML::TermXpathGenerator
       if term.path == "text()"
         base_path = "#{term.path}[normalize-space(.)]"
       else
-        unless term.namespace_prefix.nil?
-          template << complete_prefix
+        if term.path.start_with?("/")
+          template << "/"
         end
-        base_path = term.path
+        template << complete_prefix
+        if term.path.start_with?("/")
+          base_path = term.path[1..-1]
+        else
+          base_path = term.path
+        end
       end
     end
     template << base_path
